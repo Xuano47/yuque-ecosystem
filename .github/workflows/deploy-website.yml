@@ -1,8 +1,10 @@
-name: Deploy to GitHub Pages
+name: Deploy Website to GitHub Pages
 
 on:
   push:
     branches: [main]
+    paths:
+      - 'website/**'
   workflow_dispatch:
 
 permissions:
@@ -21,14 +23,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
 
-      - run: npm ci
-      - run: npm run build
+      - name: Install & Build
+        run: |
+          cd website
+          npm install
+          npm run build          
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: dist
+          publish_dir: website/dist
           keep_files: true
